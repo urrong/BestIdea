@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var braintree = require('braintree');
+var Pusher = require('pusher');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -33,7 +34,7 @@ var gateway = braintree.connect({
     privateKey:   process.env.BRAINTREE_PRIVATE_KEY
 });
 
-app.post("/checkout", function (req, res) {
+/*app.post("/checkout", function (req, res) {
 	var nonce = req.body.payment_method_nonce;
 	console.log("Nonce: " + nonce);
 	gateway.transaction.sale({
@@ -44,22 +45,31 @@ app.post("/checkout", function (req, res) {
 	gateway.clientToken.generate({}, function (err, response) {
 		res.render("index", {clientToken: response.clientToken});
 	});
-});
+});*/
 
 /*jk*/
-app.post('/notification', function(req, res){
-    var message = req.param('message');
-    pusher.trigger('notifications', 'new_notification', {
-        message: message
-    });
-    res.send("Notification triggered!")
+
+
+var pusher = new Pusher({
+   appId: '129473',
+   key: '9dbd5642c8f9ba685243',
+   secret: '0f8feeeb15e7af342fbe'
 });
 
-app.use("/", function(req, res){
+
+app.post('/notification', function(req, res){
+    var message = req.params.message;
+    pusher.trigger('notifications', 'new_notification', {
+        message:message
+    });
+    res.send("Notification triggered!" + " \"" + message + "\"");
+});
+
+/*app.use("/", function(req, res){
 	gateway.clientToken.generate({}, function (err, response) {
 		res.render("index", {clientToken: response.clientToken});
 	});
-});
+});*/
 
 //default routing
 app.use('/', routes);

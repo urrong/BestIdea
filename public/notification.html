@@ -12,14 +12,23 @@
     <button class="submit-notification">Go!</button>
     <script>
 
-    var sendNotification = function(){
+    //subscribe to our notifications channel
+    var notificationsChannel = pusher.subscribe('notifications');
 
+    //do something with our new information
+    notificationsChannel.bind('new_notification', function(notification){
+        // assign the notification's message to a <div></div>
+        var message = notification.message;
+        $('div.notification').text(message);
+    });
+
+    var sendNotification = function(){
         // get the contents of the input
         var text = $('input.create-notification').val();
 
         // POST to our server
-        $.post('/notification', {message: text}).success(function(){
-            console.log('Notification sent!');
+        $.post('/notification', {message:message}).success(function(){
+            console.log('Notification sent!' + " \"" + text + "\"");
         });
     };
 
