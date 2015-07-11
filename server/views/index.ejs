@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>BestIdea</title>
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+	<body>
+		<form id="checkout" method="post" action="/checkout">
+		  <div id="payment-form"></div>
+		  <input type="submit" value="Pay $69">
+		</form>
+
+		<script src="https://js.braintreegateway.com/v2/braintree.js"></script>
+		<script>
+		braintree.setup("<%= clientToken %>", "dropin", {
+		  container: "payment-form"
+		});
+		</script>
+	</body>
+</html>
