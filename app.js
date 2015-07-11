@@ -46,6 +46,15 @@ app.post("/checkout", function (req, res) {
 	});
 });
 
+/*jk*/
+app.post('/notification', function(req, res){
+    var message = req.param('message');
+    pusher.trigger('notifications', 'new_notification', {
+        message: message
+    });
+    res.send("Notification triggered!")
+});
+
 app.use("/", function(req, res){
 	gateway.clientToken.generate({}, function (err, response) {
 		res.render("index", {clientToken: response.clientToken});
