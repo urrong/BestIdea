@@ -58,10 +58,13 @@ var pusher = new Pusher({
 
 
 app.post('/notification', function(req, res){
-    var message = req.params.message;
+    console.log("Notification triggered! " + "\"" + message + "\"");
+    //console.log(req);
+    var message = req.body.message;
     pusher.trigger('notifications', 'new_notification', {
         message:message
     });
+    console.log({message:message});
     res.send("Notification triggered!" + " \"" + message + "\"");
 });
 
