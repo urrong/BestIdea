@@ -1,5 +1,0 @@
-$(window).ready(function () {
-
-
-});
-
