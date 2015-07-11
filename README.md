@@ -2,4 +2,5 @@
 
 Ernest Beličič</br>
 Jure Kolenko</br>
-Aleksandar Bobić
+Aleksandar Bobić</br>
+Nejc Novak
