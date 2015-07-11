@@ -28,9 +28,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 //merchant credentials
 var gateway = braintree.connect({
     environment:  braintree.Environment.Sandbox,
-    merchantId:   'nt6q55qx9z9bc6hv',
-    publicKey:    'cw42fq3tfdks6qw8',
-    privateKey:   '9f19effa2c0103da9abe50f5c3f6958a'
+    merchantId:   process.env.BRAINTREE_MERCHANT_ID,
+    publicKey:    process.env.BRAINTREE_PUBLIC_KEY,
+    privateKey:   process.env.BRAINTREE_PRIVATE_KEY
 });
 
 app.post("/checkout", function (req, res) {
