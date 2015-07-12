@@ -16,7 +16,7 @@
     var pusher = new Pusher('9dbd5642c8f9ba685243');
 
     //subscribe to our notifications channel
-    var notificationsChannel = pusher.subscribe('notifications');
+    var notificationsChannel = pusher.subscribe('notifications');//''
 
     //do something with our new information
     notificationsChannel.bind('new_notification', function(notification){
@@ -32,7 +32,7 @@
         var text = $('input.create-notification').val();
 
         // POST to our server
-        $.post('/notification', {message:text}).success(function(){
+        $.post('/notification', {message:text, ch:'notification'}).success(function(){
             console.log('Notification sent!' + " \"" + text + "\"");
         });
         console.log({message:text});

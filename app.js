@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var braintree = require('braintree');
 var Pusher = require('pusher');
+var Sendgrid = require('sendgrid');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -56,14 +57,34 @@ var pusher = new Pusher({
    secret: '0f8feeeb15e7af342fbe'
 });
 
+var sendgrid_client = Sendgrid('abobic', 'zmagalbomobattlehack2015');
+
 
 app.post('/notification', function(req, res){
-    console.log("Notification triggered! " + "\"" + message + "\"");
     //console.log(req);
     var message = req.body.message;
-    pusher.trigger('notifications', 'new_notification', {
-        message:message
-    });
+    console.log(message);
+    console.log("ch" + req.body.ch);
+    //var channel = pusher.channel(req.body.ch);
+    //console.log(channel);
+    //if(channel.occupied)
+    {
+      pusher.trigger('notifications', 'new_notification', {
+          message:message
+      });
+    }/*
+    else
+    {
+      email = new Sendgrid.Email();
+      email.addTo("test@email.si");
+      email.setFrom("aleksabobic@gmail.com");
+      email.setSubject("test mail");
+      email.setText("Huehuehue");
+      Sendgrid.send(email, function(err, json){
+        if(err){return console.error(err);}
+        console.log(json);
+      })
+    }*/
     console.log({message:message});
     res.send("Notification triggered!" + " \"" + message + "\"");
 });
