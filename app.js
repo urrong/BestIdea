@@ -27,15 +27,91 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //REST API
-app.get("/adduser", function(req, res){
+app.post("/adduser", function(req, res){
 	pg.connect(process.env.DATABASE_URL, function(err, client, done){
 		if(err) return console.error("ERROR", err);
-		console.log(req);
-		//client.query("INSERT INTO users VALUES(" + 
-		done();
+		if(req.body.email && req.body.name){
+			client.query("INSERT INTO users VALUES('" + req.body.email + "', '" + req.body.name + "')", function(err, res){
+				done();
+				if(err) console.error("ERROR", err);
+				console.log(res);
+			});
+		}
+	});
+	res.end();
+});
+
+app.post("/addquest", function(req, res){
+	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		if(err) return console.error("ERROR", err);
+		if(req.body.name && req.body.date){
+			client.query("INSERT INTO quests VALUES(default, '" + req.body.name + "', '" + req.body.date + "', 0, null, '" + req.body.description + "')" , function(err, res){
+				done();
+				if(err) console.error("ERROR", err);
+				console.log(res);
+			});
+		}
+	});
+	res.end();
+});
+
+app.post("/addfund", function(req, res){
+	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		if(err) return console.error("ERROR", err);
+		if(req.body.user && req.body.questid && req.body.amount){
+			client.query("INSERT INTO transactions VALUES('" + req.body.user + "', " + req.body.questid + ", " + req.body.amount + ")" , function(err, res){
+				done();
+				if(err) console.error("ERROR", err);
+				console.log(res);
+			});
+		}
+	});
+	res.end();
+});
+
+var picID = 1;
+app.post("/addpicture", function(req, res){
+	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		if(err) return console.error("ERROR", err);
+		if(req.body.questid && req.body.picture){
+			client.query("INSERT INTO pictures VALUES(" + picID + ", " + req.body.questid + ", '" + req.body.picture + "')" , function(err, res){
+				done();
+				if(err) console.error("ERROR", err);
+				console.log(res);
+			});
+			picID++;
+		}
+	});
+	res.end();
+});
+
+app.post("/getuser", function(req, res){
+	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		if(err) return console.error("ERROR", err);
+		if(req.body.email){
+			client.query("SELECT * FROM users WHERE email='" + req.body.email + "'", function(err, response){
+				done();
+				if(err) console.error("ERROR", err);
+				res.setHeader('Content-Type', 'application/json');
+				res.end(JSON.stringify(response.rows));
+				console.log(JSON.stringify(response.rows));
+			});
+		}
 	});
 });
 
+app.post("/getquests", function(req, res){
+	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		if(err) return console.error("ERROR", err);
+		client.query("SELECT * FROM quests", function(err, response){
+			done();
+			if(err) console.error("ERROR", err);
+			res.setHeader('Content-Type', 'application/json');
+			res.end(JSON.stringify(response.rows));
+			console.log(JSON.stringify(response.rows));
+		});
+	});
+});
 
 //BrainTree implementation
 
