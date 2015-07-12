@@ -56,6 +56,64 @@ app.post("/addquest", function(req, res){
 						done();
 						res.setHeader('Content-Type', 'application/json');
 						res.end(JSON.stringify(response.rows[0].id));
+						
+						
+						pg.connect(process.env.DATABASE_URL, function(err, client, done){
+						  if(err) return console.error("ERROR", err);
+						  client.query("SELECT * FROM users", function(err, response){
+						   done();
+						   if(err) console.error("ERROR", err);
+						   //res.setHeader('Content-Type', 'application/json');
+						  //res.end(JSON.stringify(response.rows));
+
+						  rws = response.rows;
+						   console.log(typeof(rws));
+						   console.log(rws);
+						   console.log(rws.length);
+						   console.log(rws[0]);
+						   console.log(rws[0].email);
+							for(var i=0; i < rws.length; i++)
+							{ 
+							  pusher.get({ path: '/channels/' + rws[i].email}, function(error, request, rsp){
+								//console.log(rsp);
+								//console.log(y);
+								var y = JSON.parse(rsp.body);
+								console.log("occupied: " + y.occupied);
+								  var f = request.path.indexOf('/channels/') + '/channels/'.length;
+								  var l = request.path.indexOf('?');
+								  var mothercukginmail = request.path.substring(f, l);
+								/*if(y.occupied){
+								   pusher.trigger(mothercukginmail, 'new_notification', {
+									message:"New quest: " 
+								  });
+								}*///else
+								{
+								  //sendgrid mail
+								  //console.log(sendgrid_client);
+								  console.log();
+								  email = new sendgrid_client.Email();
+								  //email.addTo("smrkafc@gmail.com");
+								  email.addTo(mothercukginmail);
+								  email.setFrom("info@badelhag.com");
+								  email.setSubject("New quest arrived: " + req.body.name);
+								  email.setText(req.body.description);
+								  //UNCOMMENT IN PRODUCTION
+								  sendgrid_client.send(email, function(err, json){
+								  if(err){return console.error(err);}
+								  console.log(json);
+								  })
+								  //console.log(email);
+								}
+							  });
+							}
+						  });
+						 });
+						
+						
+						
+						
+						
+						
 					});
 				}
 			});
@@ -227,7 +285,7 @@ var pusher = new Pusher({
 var sendgrid_client = Sendgrid('abobic', 'zmagalbomobattlehack2015');
 
 
-app.post('/notification', function(req, res){
+/*app.post('/notification', function(req, res){
   var message = req.body.message;
     console.log(message);
     console.log("ch " + req.body.ch);
@@ -284,7 +342,7 @@ app.post('/notification', function(req, res){
       });
      });
     
-});
+});*/
 
 /*app.use("/", function(req, res){
 	gateway.clientToken.generate({}, function (err, response) {
