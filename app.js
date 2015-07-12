@@ -166,16 +166,27 @@ app.post("/getfunds", function(req, res){
 
 app.post("/addbidder", function(req, res){
 	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		res.setHeader('Content-Type', 'application/json');
 		if(err) return console.error("ERROR", err);
 		if(req.body.questid && req.body.email && req.body.amount){
 			client.query("SELECT \"lowestBidder\", \"lowestBid\" FROM quests WHERE id=" + req.body.questid, function(err, response){
 				done();
 				if(err) console.error("ERROR", err);
-				if(response.rows[0].lowestBidder == null){
-					
+				else if(response.rows[0].lowestBidder == null || parseFloat(response.rows[0].lowestBid) > parseFloat(req.body.amount)){
+					console.log("here");
+					client.query("UPDATE quests SET \"lowestBidder\"='" + req.body.email + "', \"lowestBid\"=" + req.body.amount + " WHERE id =" + req.body.questid, function(err, response){
+						if(err){
+							console.error("ERROR", err);
+							
+							res.end("0");
+						}
+						else res.end("1");
+					});
 				}
-				console.log(response);
-				res.end();
+				else{
+					console.log("here");
+					res.end("0");
+				}
 			});
 		}
 	});

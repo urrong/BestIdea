@@ -5,7 +5,7 @@ exports.up = function(db, callback) {
 	db.createTable("pictures", {
 		id: {type: "int", primaryKey: true},
 		questid: {type: "int", primaryKey: true},
-		picture: "blob"
+		picture: {type: "text", notNull: true}
 	}, callback);
 };
 
