@@ -35,7 +35,7 @@ var gateway = braintree.connect({
     privateKey:   process.env.BRAINTREE_PRIVATE_KEY
 });
 
-/*app.post("/checkout", function (req, res) {
+app.post("/checkout", function (req, res) {
 	var nonce = req.body.payment_method_nonce;
 	console.log("Nonce: " + nonce);
 	gateway.transaction.sale({
@@ -46,7 +46,7 @@ var gateway = braintree.connect({
 	gateway.clientToken.generate({}, function (err, response) {
 		res.render("index", {clientToken: response.clientToken});
 	});
-});*/
+});
 
 /*jk*/
 
@@ -89,11 +89,11 @@ app.post('/notification', function(req, res){
     res.send("Notification triggered!" + " \"" + message + "\"");
 });
 
-/*app.use("/", function(req, res){
+app.use("/", function(req, res){
 	gateway.clientToken.generate({}, function (err, response) {
 		res.render("index", {clientToken: response.clientToken});
 	});
-});*/
+});
 
 //default routing
 app.use('/', routes);
