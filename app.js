@@ -46,7 +46,10 @@ app.post("/addquest", function(req, res){
 		if(err) return console.error("ERROR", err);
 		if(req.body.name && req.body.latitude && req.body.longtitude){
 			client.query("INSERT INTO quests VALUES(default, '" + req.body.name + "', current_date, 0, null, null, '" + req.body.description + "', " + req.body.latitude + ", " + req.body.longtitude + ")" , function(err, response){
-				if(err) console.error("ERROR", err);
+				if(err){
+					console.error("ERROR", err);
+					res.end();
+				}
 				else{
 					client.query("SELECT * FROM quests ORDER BY id DESC LIMIT 1", function(err, response){
 						if(err) console.error("ERROR", err);
