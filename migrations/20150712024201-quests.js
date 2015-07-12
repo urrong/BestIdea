@@ -8,7 +8,9 @@ exports.up = function(db, callback) {
 		dateAdded: {type: "date", notNull: true},
 		stage: {type: "string", notNull: true},
 		lowestBidder: "string",
-		description: "text"
+		description: "text",
+		latitude: {type: "real", notNull:true},
+		longtitude: {type: "real", notNull:true},
 	}, callback);
 };
 

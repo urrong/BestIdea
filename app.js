@@ -44,15 +44,18 @@ app.post("/adduser", function(req, res){
 app.post("/addquest", function(req, res){
 	pg.connect(process.env.DATABASE_URL, function(err, client, done){
 		if(err) return console.error("ERROR", err);
-		if(req.body.name && req.body.date){
-			client.query("INSERT INTO quests VALUES(default, '" + req.body.name + "', '" + req.body.date + "', 0, null, '" + req.body.description + "')" , function(err, res){
-				done();
+		if(req.body.name && req.body.latitude && req.body.longtitude){
+			client.query("INSERT INTO quests VALUES(default, '" + req.body.name + "', current_date, 0, null, '" + req.body.description + "', " + req.body.latitude + ", " + req.body.longtitude + ")" , function(err, response){
 				if(err) console.error("ERROR", err);
-				console.log(res);
+				client.query("SELECT * FROM quests ORDER BY id DESC LIMIT 1", function(err, response){
+					if(err) console.error("ERROR", err);
+					done();
+					res.setHeader('Content-Type', 'application/json');
+					res.end(JSON.stringify(response.rows[0].id));
+				});
 			});
 		}
 	});
-	res.end();
 });
 
 app.post("/addfund", function(req, res){
@@ -97,6 +100,19 @@ app.post("/getuser", function(req, res){
 				console.log(JSON.stringify(response.rows));
 			});
 		}
+	});
+});
+
+app.post("/getusers", function(req, res){
+	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		if(err) return console.error("ERROR", err);
+		client.query("SELECT * FROM users", function(err, response){
+			done();
+			if(err) console.error("ERROR", err);
+			res.setHeader('Content-Type', 'application/json');
+			res.end(JSON.stringify(response.rows));
+			console.log(JSON.stringify(response.rows));
+		});
 	});
 });
 
