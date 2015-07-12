@@ -103,6 +103,19 @@ app.post("/getuser", function(req, res){
 	});
 });
 
+app.post("/getusers", function(req, res){
+	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		if(err) return console.error("ERROR", err);
+		client.query("SELECT * FROM users", function(err, response){
+			done();
+			if(err) console.error("ERROR", err);
+			res.setHeader('Content-Type', 'application/json');
+			res.end(JSON.stringify(response.rows));
+			console.log(JSON.stringify(response.rows));
+		});
+	});
+});
+
 app.post("/getquests", function(req, res){
 	pg.connect(process.env.DATABASE_URL, function(err, client, done){
 		if(err) return console.error("ERROR", err);
