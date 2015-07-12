@@ -1,3 +1,105 @@
+#nav_custom {
+  border: 0px;
+  border-radius: 0px;
+  box-shadow: none;
+  background-color: #03A9F4;
+  margin: 10px 0px 10px 0px; }
 
+#nav_container {
+  z-index: 20;
+  position: fixed;
+  top: 0px;
+  background-color: #03A9F4;
+  margin: 0 auto;
+  width: 100%;
+  -webkit-box-shadow: 0px 1px 9px 2px rgba(50, 50, 50, 0.32);
+  -moz-box-shadow: 0px 1px 9px 2px rgba(50, 50, 50, 0.32);
+  box-shadow: 0px 1px 9px 2px rgba(50, 50, 50, 0.32);
+  margin-bottom: 10px; }
+  #nav_container .container-fluid {
+    background-color: #03A9F4; }
+  #nav_container a {
+    color: white;
+    text-shadow: none; }
+  #nav_container a:hover {
+    opacity: 0.85;
+    border-radius: 7px; }
+
+#login {
+  float: right;
+  background-color: white;
+  border: 1px solid white;
+  box-shadow: none;
+  background-color: #03A9F4;
+  color: white;
+  background-image: none;
+  letter-spacing: 1px; }
+
+#login:hover {
+  background-color: white;
+  color: #03A9F4; }
+
+.back_this_button {
+  float: right;
+  background-color: white;
+  border: 1px solid #03A9F4;
+  box-shadow: none;
+  background-color: #03A9F4;
+  color: white;
+  background-image: none;
+  letter-spacing: 1px;
+  transition: all 0.25s ease-in-out;
+  -webkit-transition: all 0.25s ease-in-out;
+  -moz-transition: all 0.25s ease-in-out;
+  -o-transition: all 0.25s ease-in-out; }
+
+.back_this_button:hover {
+  -webkit-box-shadow: 0px 1px 6px 2px rgba(50, 50, 50, 0.32);
+  -moz-box-shadow: 0px 1px 6px 2px rgba(50, 50, 50, 0.32);
+  box-shadow: 0px 1px 6px 2px rgba(50, 50, 50, 0.32);
+  border: 1px solid #03A9F4; }
+
+#list_container {
+  padding-bottom: 10px; }
+  #list_container .list_item {
+    margin-bottom: 20px;
+    border: 1px solid #D0D0D0;
+    padding-bottom: 40px; }
+    #list_container .list_item p {
+      padding-left: 120px;
+      padding-right: 120px;
+      margin-top: 30px;
+      margin-bottom: 30px; }
+    #list_container .list_item h2 {
+      padding-left: 120px;
+      margin-top: 30px;
+      margin-bottom: 30px; }
+  #list_container .list_item:nth-of-type(1) {
+    padding-right: 30px;
+    padding-left: 0px;
+    margin-top: 80px; }
+  #list_container .list_item:nth-of-type(n+2) {
+    padding-right: 30px;
+    padding-left: 0px;
+    padding-top: 10px; }
+  #list_container .inner_list_item {
+    background-color: white; }
+  #list_container #mapmap {
+    width: 80%;
+    height: 250px;
+    background-color: #CCC;
+    margin-left: 10%; }
+
+.image_list {
+  padding: 0px;
+  padding-left: 4%; }
+  .image_list img {
+    width: 24%;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    display: block;
+    position: relative;
+    float: left; }
 
 /*# sourceMappingURL=style.css.map */
