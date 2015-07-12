@@ -217,32 +217,62 @@ var sendgrid_client = Sendgrid('abobic', 'zmagalbomobattlehack2015');
 
 
 app.post('/notification', function(req, res){
-    //console.log(req);
-    var message = req.body.message;
+  var message = req.body.message;
     console.log(message);
-    console.log("ch" + req.body.ch);
-    //var channel = pusher.channel(req.body.ch);
-    //console.log(channel);
-    //if(channel.occupied)
-    {
-      pusher.trigger('notifications', 'new_notification', {
-          message:message
+    console.log("ch " + req.body.ch);
+    var v;
+    pg.connect(process.env.DATABASE_URL, function(err, client, done){
+      if(err) return console.error("ERROR", err);
+      client.query("SELECT * FROM users", function(err, response){
+       done();
+       if(err) console.error("ERROR", err);
+       res.setHeader('Content-Type', 'application/json');
+      //res.end(JSON.stringify(response.rows));
+
+      rws = response.rows;
+       console.log(typeof(rws));
+       console.log(rws);
+       console.log(rws.length);
+       console.log(rws[0]);
+       console.log(rws[0].email);
+       setRws(rws);
+        for(var i=0; i < rws.length; i++)
+        { 
+          pusher.get({ path: '/channels/' + rws[i].email}, function(error, request, rsp){
+            //console.log(rsp);
+            //console.log(y);
+            var y = JSON.parse(rsp.body);
+            console.log("occupied: " + y.occupied);
+              var f = request.path.indexOf('/channels/') + '/channels/'.length;
+              var l = request.path.indexOf('?');
+              var mothercukginmail = request.path.substring(f, l);
+            if(y.occupied){
+               pusher.trigger(mothercukginmail, 'new_notification', {
+                message:message
+              });
+            }//else
+            {
+              //sendgrid mail
+              //console.log(sendgrid_client);
+              console.log();
+              email = new sendgrid_client.Email();
+              //email.addTo("smrkafc@gmail.com");
+              email.addTo(mothercukginmail);
+              email.setFrom("bobic.aleksandar92@gmail.com");
+              email.setSubject("test mail");
+              email.setText(message);
+              //UNCOMMENT IN PRODUCTION
+              sendgrid_client.send(email, function(err, json){
+              if(err){return console.error(err);}
+              console.log(json);
+              })
+              //console.log(email);
+            }
+          });
+        }
       });
-    }/*
-    else
-    {
-      email = new Sendgrid.Email();
-      email.addTo("test@email.si");
-      email.setFrom("aleksabobic@gmail.com");
-      email.setSubject("test mail");
-      email.setText("Huehuehue");
-      Sendgrid.send(email, function(err, json){
-        if(err){return console.error(err);}
-        console.log(json);
-      })
-    }*/
-    console.log({message:message});
-    res.send("Notification triggered!" + " \"" + message + "\"");
+     });
+    
 });
 
 /*app.use("/", function(req, res){
