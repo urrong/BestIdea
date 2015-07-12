@@ -228,10 +228,10 @@ app.post("/addbidder", function(req, res){
 		if(err) return console.error("ERROR", err);
 		if(req.body.questid && req.body.email && req.body.amount){
 			client.query("SELECT \"lowestBidder\", \"lowestBid\" FROM quests WHERE id=" + req.body.questid, function(err, response){
-				done();
 				if(err) console.error("ERROR", err);
 				else if(response.rows[0].lowestBidder == null || parseFloat(response.rows[0].lowestBid) > parseFloat(req.body.amount)){
 					client.query("UPDATE quests SET \"lowestBidder\"='" + req.body.email + "', \"lowestBid\"=" + req.body.amount + " WHERE id =" + req.body.questid, function(err, response){
+						done();
 						if(err){
 							console.error("ERROR", err);
 							res.end("0");
@@ -246,6 +246,45 @@ app.post("/addbidder", function(req, res){
 		}
 		else{
 			res.end("0");
+		}
+	});
+});
+
+app.get("/changestage", function(req, res){
+	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		if(err) return console.error("ERROR", err);
+		if(req.query.questid){
+			client.query("SELECT * FROM quests WHERE id=" + req.query.questid, function(err, response){
+				if(err) console.error("ERROR", err);
+				var stage = parseInt(response.rows[0].stage);
+				console.log(stage);
+				stage++;
+				if(stage == 1){
+					client.query("SELECT sum(amount) FROM transactions WHERE questid=" + req.query.questid, function(err, responsee){
+						if(err) console.error("ERROR", err);
+						var sum = parseFloat(responsee.rows[0].sum);
+						if(sum >= response.rows[0].lowestBid){
+							stage = 2;
+						}
+						else{
+							stage = 1;
+						}
+						
+						client.query("UPDATE quests SET stage=" + stage + " where id=" + req.query.questid, function(err, response){
+							done();
+							if(err) console.error("ERROR", err);
+							res.end();
+						});
+					});
+				}
+				else if(stage == 2){
+					client.query("UPDATE quests SET stage=" + stage + " where id=" + req.query.questid, function(err, response){
+						done();
+						if(err) console.error("ERROR", err);
+						res.end();
+					});
+				}
+			});
 		}
 	});
 });
