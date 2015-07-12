@@ -45,14 +45,16 @@ app.post("/addquest", function(req, res){
 	pg.connect(process.env.DATABASE_URL, function(err, client, done){
 		if(err) return console.error("ERROR", err);
 		if(req.body.name && req.body.latitude && req.body.longtitude){
-			client.query("INSERT INTO quests VALUES(default, '" + req.body.name + "', current_date, 0, null, '" + req.body.description + "', " + req.body.latitude + ", " + req.body.longtitude + ")" , function(err, response){
+			client.query("INSERT INTO quests VALUES(default, '" + req.body.name + "', current_date, 0, null, null, '" + req.body.description + "', " + req.body.latitude + ", " + req.body.longtitude + ")" , function(err, response){
 				if(err) console.error("ERROR", err);
-				client.query("SELECT * FROM quests ORDER BY id DESC LIMIT 1", function(err, response){
-					if(err) console.error("ERROR", err);
-					done();
-					res.setHeader('Content-Type', 'application/json');
-					res.end(JSON.stringify(response.rows[0].id));
-				});
+				else{
+					client.query("SELECT * FROM quests ORDER BY id DESC LIMIT 1", function(err, response){
+						if(err) console.error("ERROR", err);
+						done();
+						res.setHeader('Content-Type', 'application/json');
+						res.end(JSON.stringify(response.rows[0].id));
+					});
+				}
 			});
 		}
 	});
@@ -126,6 +128,53 @@ app.post("/getquests", function(req, res){
 			res.end(JSON.stringify(response.rows));
 			console.log(JSON.stringify(response.rows));
 		});
+	});
+});
+
+app.post("/getpictures", function(req, res){
+	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		if(err) return console.error("ERROR", err);
+		if(req.body.questid){
+			client.query("SELECT * FROM pictures WHERE questid=" + req.body.questid, function(err, response){
+				done();
+				if(err) console.error("ERROR", err);
+				res.setHeader('Content-Type', 'application/json');
+				res.end(JSON.stringify(response.rows));
+				console.log(JSON.stringify(response.rows));
+			});
+		}
+	});
+});
+
+app.post("/getfunds", function(req, res){
+	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		if(err) return console.error("ERROR", err);
+		if(req.body.questid){
+			client.query("SELECT sum(amount) FROM transactions WHERE questid=" + req.body.questid, function(err, response){
+				done();
+				if(err) console.error("ERROR", err);
+				res.setHeader('Content-Type', 'application/json');
+				res.end(JSON.stringify(response.rows));
+				console.log(JSON.stringify(response.rows));
+			});
+		}
+	});
+});
+
+app.post("/addbidder", function(req, res){
+	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		if(err) return console.error("ERROR", err);
+		if(req.body.questid && req.body.email && req.body.amount){
+			client.query("SELECT \"lowestBidder\", \"lowestBid\" FROM quests WHERE id=" + req.body.questid, function(err, response){
+				done();
+				if(err) console.error("ERROR", err);
+				if(response.rows[0].lowestBidder == null){
+					
+				}
+				console.log(response);
+				res.end();
+			});
+		}
 	});
 });
 
