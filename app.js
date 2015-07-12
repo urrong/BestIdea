@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var braintree = require('braintree');
 var Pusher = require('pusher');
 var Sendgrid = require('sendgrid');
+var pg = require("pg");
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -25,10 +26,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//REST API
+app.get("/adduser", function(req, res){
+	pg.connect(process.env.DATABASE_URL, function(err, client, done){
+		if(err) return console.error("ERROR", err);
+		console.log(req);
+		//client.query("INSERT INTO users VALUES(" + 
+		done();
+	});
+});
+
+
 //BrainTree implementation
 
 //merchant credentials
-var gateway = braintree.connect({
+/*var gateway = braintree.connect({
     environment:  braintree.Environment.Sandbox,
     merchantId:   process.env.BRAINTREE_MERCHANT_ID,
     publicKey:    process.env.BRAINTREE_PUBLIC_KEY,
@@ -46,7 +58,7 @@ app.post("/checkout", function (req, res) {
 	gateway.clientToken.generate({}, function (err, response) {
 		res.render("index", {clientToken: response.clientToken});
 	});
-});
+});*/
 
 /*jk*/
 
@@ -89,11 +101,11 @@ app.post('/notification', function(req, res){
     res.send("Notification triggered!" + " \"" + message + "\"");
 });
 
-app.use("/", function(req, res){
+/*app.use("/", function(req, res){
 	gateway.clientToken.generate({}, function (err, response) {
 		res.render("index", {clientToken: response.clientToken});
 	});
-});
+});*/
 
 //default routing
 app.use('/', routes);
